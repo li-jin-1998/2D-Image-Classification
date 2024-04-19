@@ -1,0 +1,20 @@
+#python train.py --arch "efficientnet_b0" --epoch 20;
+python train.py --arch "efficientnet_b1" --epoch 20;
+#python train.py --arch "efficientnet_b2" --epoch 20;
+
+#python predict.py --arch "efficientnet_b0";
+#python plot_confusion_matrix.py --arch "efficientnet_b0";
+#python predict.py --arch "efficientnet_b1";
+#python plot_confusion_matrix.py --arch "efficientnet_b1";
+#python predict.py --arch "efficientnet_b2";
+#python plot_confusion_matrix.py --arch "efficientnet_b2";
+
+#python test.py --arch "efficientnet_b0";
+#python test.py --arch "efficientnet_b1";
+#python test.py --arch "efficientnet_b2";
+
+#python train.py --arch "mobilenet" --epoch 30;
+
+#python convert_onnx.py --arch "efficientnet_b0";
+#python convert_onnx.py --arch "efficientnet_b1";
+#python convert_onnx.py --arch "efficientnet_b2";
