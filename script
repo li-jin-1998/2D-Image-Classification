@@ -1,5 +1,5 @@
 #python train.py --arch "efficientnet_b0" --epoch 20;
-python train.py --arch "efficientnet_b1" --epoch 20;
+#python train.py --arch "efficientnet_b1" --epoch 20;
 #python train.py --arch "efficientnet_b2" --epoch 20;
 
 #python predict.py --arch "efficientnet_b0";

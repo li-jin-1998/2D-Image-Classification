@@ -9,7 +9,7 @@ import math
 import torch
 from torch.utils.tensorboard import SummaryWriter
 import torch.optim.lr_scheduler as lr_scheduler
-from parse_args import parse_args, getModel
+from parse_args import parse_args, get_model
 
 from dataset import MyDataSet
 from utils import read_split_data, train_one_epoch, evaluate
@@ -28,11 +28,11 @@ def train(args):
 
     train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(args.data_path)
 
-    train_dataset = MyDataSet(images_path=train_images_path,
+    train_dataset = MyDataSet(images_paths=train_images_path,
                               images_class=train_images_label,
                               images_size=args.image_size)
 
-    val_dataset = MyDataSet(images_path=val_images_path,
+    val_dataset = MyDataSet(images_paths=val_images_path,
                             images_class=val_images_label,
                             images_size=args.image_size)
 
@@ -53,7 +53,7 @@ def train(args):
                                              num_workers=nw,
                                              collate_fn=val_dataset.collate_fn)
 
-    model = getModel(args)
+    model = get_model(args)
     if args.resume:
         weights_path = "./weights/{}_best_model.pth".format(args.arch)
         model.load_state_dict(torch.load(weights_path, map_location='cpu'))

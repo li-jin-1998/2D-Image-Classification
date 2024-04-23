@@ -15,23 +15,25 @@ def parse_args():
                         help='/mobilenet/mobilevit/efficientnet')
     parser.add_argument('--num_classes', type=int, default=2)
     parser.add_argument('--epochs', type=int, default=30)
-    parser.add_argument('--batch-size', type=int, default=128)
+    parser.add_argument('--batch-size', type=int, default=64)
     parser.add_argument("--image_size", default=192, type=int)
     parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--lrf', type=float, default=0.01)
     parser.add_argument('--resume', default=False, help='resume from checkpoint')
     parser.add_argument('--data_path', type=str,
-                        default="/mnt/algo_storage_server/ScanSceneClassification/dataset")
+                        default="/mnt/algo_storage_server/ScanSceneClassification")
     parser.add_argument('--freeze_layers', type=bool, default=False)
     parser.add_argument('--device', default='cuda', help='device id (i.e. 0 or 0,1 or cpu)')
 
     return parser.parse_args()
 
 
-def getModel(args):
+def get_model(args):
     print('**************************')
-    print('models:{}\nepoch:{}\nbatch size:{}\nimage size:{}'
-          .format(args.arch, args.epochs, args.batch_size, args.image_size))
+    print(f'model:{args.arch}\n'
+          f'epoch:{args.epochs}\n'
+          f'batch size:{args.batch_size}\n'
+          f'image size:{args.image_size}')
     print('**************************')
 
     if args.arch == 'mobilenet':

@@ -12,7 +12,7 @@ import json
 import torch
 import tqdm
 import matplotlib.pyplot as plt
-from parse_args import parse_args, getModel
+from parse_args import parse_args, get_model
 
 
 def predict(args, verbose=True):
@@ -26,7 +26,7 @@ def predict(args, verbose=True):
         class_indict = json.load(f)
     print(class_indict)
     # create model
-    model = getModel(args)
+    model = get_model(args)
     # load model weights
     model_weight_path = "./weights/{}_best_model.pth".format(args.arch)
     model.load_state_dict(torch.load(model_weight_path, map_location=device))

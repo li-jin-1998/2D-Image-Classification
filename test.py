@@ -7,7 +7,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from parse_args import parse_args, getModel
+from parse_args import parse_args, get_model
 
 from dataset import MyDataSet
 from utils import read_split_data, evaluate
@@ -15,7 +15,7 @@ from utils import read_split_data, evaluate
 
 # tensorboard --logdir=./runs --port=2000
 
-def test(args):
+def model_test(args):
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     print(args)
 
@@ -38,7 +38,7 @@ def test(args):
                                              collate_fn=val_dataset.collate_fn)
 
     # 如果存在预训练权重则载入
-    model = getModel(args)
+    model = get_model(args)
     model_weight_path = "./weights/{}_best_model.pth".format(args.arch)
     model.load_state_dict(torch.load(model_weight_path, map_location=device))
     start_time = time.time()
@@ -58,4 +58,4 @@ def test(args):
 if __name__ == '__main__':
     args = parse_args()
 
-    test(args)
+    model_test(args)

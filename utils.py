@@ -9,6 +9,7 @@ from torch.nn.functional import cross_entropy
 from tqdm import tqdm
 
 from dataset import MyDataSet
+from parse_args import parse_args
 
 
 def read_split_data(root: str):
@@ -16,8 +17,9 @@ def read_split_data(root: str):
     assert os.path.exists(root), "dataset root: {} does not exist.".format(root)
 
     # 遍历文件夹，一个文件夹对应一个类别
-    classes = [cla for cla in os.listdir(os.path.join(root, 'train')) if
-               os.path.isdir(os.path.join(root, 'train', cla))]
+    # classes = [cla for cla in os.listdir(os.path.join(root, 'train')) if
+    #            os.path.isdir(os.path.join(root, 'train', cla))]
+    classes = ["extra", "intra"]
     # 排序，保证各平台顺序一致
     classes.sort()
     # 生成类别名称以及对应的数字索引
@@ -31,14 +33,11 @@ def read_split_data(root: str):
     val_images_path = []  # 存储验证集的所有图片路径
     val_images_label = []  # 存储验证集图片对应索引信息
     every_class_num = {}  # 存储每个类别的样本总数
-    supported = [".jpg", ".JPG", ".png", ".PNG", ".tif"]  # 支持的文件后缀类型
     # 遍历每个文件夹下的文件
     for cla in classes:
-        cla_path = os.path.join(root, 'train', cla)
-        # print(root,cla_path)
-        # 遍历获取supported支持的所有文件路径
-        images = [os.path.join(root, 'train', cla, i) for i in os.listdir(cla_path)[::]
-                  if os.path.splitext(i)[-1] in supported]
+        txt_file = os.path.join(root, 'train_' + cla + '.txt')
+        images = sorted([os.path.join(os.path.dirname(txt_file), cla, line.strip()) for line in open(txt_file)])
+        # print(images)
         # 排序，保证各平台顺序一致
         images.sort()
         # 获取该类别对应的索引
@@ -49,10 +48,8 @@ def read_split_data(root: str):
             train_images_path.append(img_path)
             train_images_label.append(image_class)
     for cla in classes:
-        cla_path = os.path.join(root, 'test', cla)
-        # 遍历获取supported支持的所有文件路径
-        images = [os.path.join(root, 'test', cla, i) for i in os.listdir(cla_path)[::]
-                  if os.path.splitext(i)[-1] in supported]
+        txt_file = os.path.join(root, 'test_' + cla + '.txt')
+        images = sorted([os.path.join(os.path.dirname(txt_file), cla, line.strip()) for line in open(txt_file)])
         # 排序，保证各平台顺序一致
         images.sort()
         # 获取该类别对应的索引
@@ -202,11 +199,11 @@ def evaluate(model, data_loader, device, epoch):
 
 
 if __name__ == '__main__':
-    data_path = "/mnt/algo_storage_server/ScanSceneClassification/dataset2"
-    train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(data_path)
+    args = parse_args()
+    train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(args.data_path)
 
     # 实例化验证数据集
-    val_dataset = MyDataSet(images_path=val_images_path,
+    val_dataset = MyDataSet(images_paths=val_images_path,
                             images_class=val_images_label, images_size=192)
     val_loader = torch.utils.data.DataLoader(val_dataset,
                                              batch_size=16,

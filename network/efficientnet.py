@@ -89,7 +89,7 @@ class EfficientNet(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = x.permute(0, 3, 1, 2)  # rgb
+        # x = x.permute(0, 3, 1, 2)  # rgb
         backbone_out = self.backbone(x)
         x = backbone_out['stage0']
         x = self.avgpool(x)

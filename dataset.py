@@ -4,7 +4,6 @@ import PIL.Image
 import cv2
 import numpy as np
 import torch
-from PIL import Image
 from torch.utils.data import Dataset
 
 torch.manual_seed(2023)
@@ -37,11 +36,14 @@ def preprocessing(image, image_size):
     return image
 
 
-def pre_process(path, image_size):
+def pre_process(path, image_size, transform=False):
     img = cv2.imread(path)
+    if img is None:
+        print(path)
+        pass
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (image_size, image_size), interpolation=cv2.INTER_CUBIC)
-    if 'train' in path:
+    if transform:
         scale = random.uniform(0.8, 1.2)
         contrast = random.uniform(0.8, 1.2)
         img = cv2.convertScaleAbs(img, alpha=scale, beta=contrast)
@@ -54,26 +56,19 @@ def pre_process(path, image_size):
 
 
 class MyDataSet(Dataset):
-    """自定义数据集"""
-
-    def __init__(self, images_path: list, images_class: list, images_size: int):
-        self.images_path = images_path
+    def __init__(self, images_paths: list, images_class: list, images_size: int):
+        self.images_paths = images_paths
         self.images_class = images_class
         self.images_size = images_size
         # self.transform = transform
 
     def __len__(self):
-        return len(self.images_path)
+        return len(self.images_paths)
 
-    def __getitem__(self, item):
-        # img = Image.open(self.images_path[item])
-        # # RGB为彩色图片，L为灰度图片
-        # if img.mode != 'RGB':
-        #     raise ValueError("image: {} isn't RGB mode.".format(self.images_path[item]))
-        # img = torch.Tensor(preprocessing(img, self.images_size))
-
-        label = self.images_class[item]
-        img = torch.Tensor(pre_process(self.images_path[item], self.images_size))
+    def __getitem__(self, index):
+        label = self.images_class[index]
+        # img=self.images[index]
+        img = torch.Tensor(pre_process(self.images_paths[index], self.images_size))
         img = img.permute(2, 0, 1)
         # if self.transform is not None:
         #     img = self.transform(img)

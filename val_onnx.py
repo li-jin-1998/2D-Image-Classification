@@ -9,7 +9,7 @@ import numpy as np
 import onnxruntime
 import tqdm
 
-from parse_args import parse_args, getModel
+from parse_args import parse_args, get_model
 
 # read class_indict
 json_path = './class_indices.json'
@@ -26,9 +26,9 @@ os.mkdir(error_path)
 
 # Load ONNX model
 args = parse_args()
-model = getModel(args)
+model = get_model(args)
 onnx_file_name = "./weights/{}_best_model_ssr.onnx".format(args.arch)
-simplify_onnx_file_name = "./weights/{}_best_model_ssr_simplify.onnx".format(args.arch)
+# simplify_onnx_file_name = "./weights/{}_best_model_ssr_simplify.onnx".format(args.arch)
 session = onnxruntime.InferenceSession(onnx_file_name)
 start_time = time.time()
 # x = random.randint(1, 10000)
@@ -51,8 +51,6 @@ for item in ['extra', 'intra'][::-1]:
         # print(origin_image.shape)
         origin_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2RGB)
         image = cv2.resize(origin_image, (192, 192), interpolation=cv2.INTER_CUBIC)
-        # image = cv2.bilateralFilter(image, 2, 50, 50)  # remove images noise.
-        # img = cv2.applyColorMap(img, cv2.COLORMAP_BONE)  # produce a pseudocolored image. 伪彩色
         image = np.array(image, np.float32)
         image = image / 127.5 - 1
 
