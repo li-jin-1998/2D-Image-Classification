@@ -51,9 +51,11 @@ class IntermediateLayerGetter(nn.ModuleDict):
 
 
 class EfficientNet(nn.Module):
-    def __init__(self, num_classes, pretrain_backbone: bool = True, model_name: str = None):
+    def __init__(self, num_classes, pretrain_backbone: bool = True, model_name: str = None,
+                 is_convert_onnx: bool = False):
         super(EfficientNet, self).__init__()
-        print(model_name)
+        self.is_convert_onnx = is_convert_onnx
+        print(f"model_name : {model_name}, convert onnx : {is_convert_onnx}")
         if model_name == 'efficientnet_b0':
             backbone = efficientnet.efficientnet_b0(pretrained=pretrain_backbone)
         elif model_name == 'efficientnet_b1':
@@ -80,21 +82,18 @@ class EfficientNet(nn.Module):
         self.backbone = IntermediateLayerGetter(backbone, return_layers=return_layers)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.classifier = nn.Sequential(
-            # nn.Dropout(0.5),
-            # nn.Linear(n_channels_dict[model_name], 512),
-            nn.ReLU(),
-            nn.Dropout(0.25),
-            nn.Linear(n_channels_dict[model_name], num_classes),
-        )
+        self.fc = nn.Linear(n_channels_dict[model_name], num_classes)
+        self.dropout = nn.Dropout(0.5)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x = x.permute(0, 3, 1, 2)  # rgb
+        if self.is_convert_onnx:
+            x = x.permute(0, 3, 1, 2)
         backbone_out = self.backbone(x)
         x = backbone_out['stage0']
         x = self.avgpool(x)
+        x = self.dropout(x)
         x = torch.flatten(x, 1)
-        x = self.classifier(x)
+        x = self.fc(x)
         x = F.sigmoid(x)
         return x
 

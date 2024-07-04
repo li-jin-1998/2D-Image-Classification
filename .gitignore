@@ -11,6 +11,7 @@ __pycache__/
 *.jpg
 *.pth
 *.onnx
+./dataset/
 
 # C extensions
 *.so

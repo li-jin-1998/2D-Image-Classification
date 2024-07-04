@@ -56,11 +56,11 @@ def pre_process(path, image_size, transform=False):
 
 
 class MyDataSet(Dataset):
-    def __init__(self, images_paths: list, images_class: list, images_size: int):
+    def __init__(self, images_paths: list, images_class: list, images_size: int, transform=None):
         self.images_paths = images_paths
         self.images_class = images_class
         self.images_size = images_size
-        # self.transform = transform
+        self.transform = transform
 
     def __len__(self):
         return len(self.images_paths)
@@ -68,7 +68,7 @@ class MyDataSet(Dataset):
     def __getitem__(self, index):
         label = self.images_class[index]
         # img=self.images[index]
-        img = torch.Tensor(pre_process(self.images_paths[index], self.images_size))
+        img = torch.Tensor(pre_process(self.images_paths[index], self.images_size, transform=self.transform))
         img = img.permute(2, 0, 1)
         # if self.transform is not None:
         #     img = self.transform(img)

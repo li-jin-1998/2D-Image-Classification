@@ -41,7 +41,7 @@ def predict(args, verbose=True):
     for item in ['extra', 'intra'][::-1]:
         os.mkdir(os.path.join(error_path, item))
         print(item)
-        path = "/mnt/algo_storage_server/ScanSceneClassification/dataset/test/" + item
+        path = "/mnt/algo-storage-server/Projects/ScanSceneClassification/dataset/test/" + item
         paths = os.listdir(path)
         s = len(paths)
         wrong = 0

@@ -2,7 +2,7 @@ import datetime
 import os
 import time
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 import math
 
@@ -23,14 +23,14 @@ def train(args):
     print(args)
     print('Start Tensorboard with "tensorboard --logdir=runs", view at http://localhost:2000/')
     tb_writer = SummaryWriter()
-    if os.path.exists("./weights") is False:
+    if not os.path.exists("./weights"):
         os.makedirs("./weights")
 
     train_images_path, train_images_label, val_images_path, val_images_label = read_split_data(args.data_path)
 
     train_dataset = MyDataSet(images_paths=train_images_path,
                               images_class=train_images_label,
-                              images_size=args.image_size)
+                              images_size=args.image_size, transform=False)
 
     val_dataset = MyDataSet(images_paths=val_images_path,
                             images_class=val_images_label,
@@ -57,6 +57,7 @@ def train(args):
     if args.resume:
         weights_path = "./weights/{}_best_model.pth".format(args.arch)
         model.load_state_dict(torch.load(weights_path, map_location='cpu'))
+        print("loaded weights from {}".format(weights_path))
 
     if args.freeze_layers:
         for name, para in model.named_parameters():

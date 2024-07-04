@@ -130,7 +130,7 @@ def read_pickle(file_name: str) -> list:
 
 
 def criterion(inputs, target):
-    loss_weight = torch.as_tensor([3.0, 1.0], device="cuda")
+    loss_weight = torch.as_tensor([1.0, 1.0], device="cuda")
     return cross_entropy(inputs, target, weight=loss_weight, label_smoothing=0.)
 
 

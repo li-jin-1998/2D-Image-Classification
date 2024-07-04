@@ -80,5 +80,5 @@ class MobileNet(nn.Module):
 
 
 if __name__ == '__main__':
-    model = MobileNet(num_classes=2).to('cuda')
+    model = MobileNet(num_classes=2, pretrain_backbone=False).to('cuda')
     summary(model, (3, 192, 192))

@@ -1,9 +1,9 @@
 import numpy as np
+import onnx
 import onnxruntime
 import torch
 import torch.onnx
 
-import onnx
 from parse_args import parse_args, get_model
 
 device = torch.device("cpu")
@@ -17,7 +17,7 @@ def main():
     args = parse_args()
     # device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     # create model
-    model = get_model(args)
+    model = get_model(args, is_convert_onnx=True)
     weights_path = "./weights/{}_best_model.pth".format(args.arch)
     # weights_path ="./weights/{}_latest_model.pth".format(args.arch)
     print(weights_path)
